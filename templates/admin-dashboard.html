@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    
+    <h2>Users</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Type</th>
+            <th>Action</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.type_of_doctor if user.type_of_doctor else 'Patient' }}</td>
+            <td><a href="{{ url_for('delete_user', user_id=user.id) }}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+    <h2>Appointments</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Action</th>
+        </tr>
+        {% for appointment in appointments %}
+        <tr>
+            <td>{{ appointment.id }}</td>
+            <td>{{ appointment.user.username }}</td>
+            <td>{{ appointment.user.type_of_doctor if appointment.user.type_of_doctor else 'N/A' }}</td>
+            <td><a href="{{ url_for('delete_appointment', appointment_id=appointment.id) }}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+    <br>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>

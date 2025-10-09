@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        .login-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .login-btn {
+            display: block;
+            width: 200px;
+            margin: 10px auto;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .login-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Select Your Role</h2>
+    <a href="{{ url_for('patient_login') }}" class="login-btn">Patient Login</a>
+    <a href="{{ url_for('doctor_login') }}" class="login-btn">Doctor Login</a>
+    <a href="{{ url_for('asha_login') }}" class="login-btn">ASHA Worker Login</a>
+</div>
+
+</body>
+</html>

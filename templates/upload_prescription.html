@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Prescription | Medicare</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/heart-pulse-solid.svg') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 10px;
+            transition: color 0.3s ease;
+        }
+        .navbar a:hover {
+            color: #f1c40f;
+        }
+        .book {
+            max-width: 600px;
+            margin: 100px auto 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .heading {
+            text-align: center;
+            color: #16a085;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: none;
+        }
+        .glass-row {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+        }
+        .glass-row p {
+            font-size: 1.2rem;
+            color: #333;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        .glass-row input[type="file"] {
+            display: block;
+            margin: 20px 0;
+            font-size: 1rem;
+            color: #555;
+        }
+        .btn {
+            background: linear-gradient(135deg, #16a085, #1abc9c);
+            color: rgb(24, 235, 207);
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="{{ url_for('index') }}" class="logo"><i class="fas fa-heartbeat"></i> medicare</a>
+        <nav class="navbar">
+            <a href="{{ url_for('index') }}">Dashboard</a>
+            <a href="{{ url_for('doctor_patients') }}">Patients</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div style="text-align: center; margin: 20px;">
+        {% for category, message in messages %}
+        <p style="color: {% if category == 'success' %}#16a085{% else %}#e74c3c{% endif %}; font-size: 1.2rem;">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <section class="book" id="book">
+        <h1 class="heading">Upload <span>Prescription</span></h1>
+        <div class="glass-row">
+            <form method="POST" enctype="multipart/form-data">
+                <p><strong>Patient:</strong> {{ appointment.name }}</p>
+                <p><strong>Time Slot:</strong> {{ appointment.time_slot }}</p>
+                <input type="file" name="file" accept=".pdf,.doc,.docx" required>
+                <input type="submit" value="Upload" class="btn">
+            </form>
+        </div>
+    </section>
+</body>
+</html>

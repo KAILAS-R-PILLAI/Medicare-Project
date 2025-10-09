@@ -1,0 +1,4 @@
+Prescription for (Appointment ID: 1):
+- Medicine 1
+- Medicine 2
+- Medicine 3

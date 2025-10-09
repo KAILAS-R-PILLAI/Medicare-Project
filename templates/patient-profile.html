@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicare - Profile</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/heart-pulse-solid.svg') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+        }
+        .header .logo {
+            font-size: 2rem;
+            text-decoration: none;
+            color: white;
+        }
+        .header .logo i {
+            margin-right: 10px;
+        }
+        .navbar {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 10px;
+            transition: color 0.3s ease;
+        }
+        .navbar a:hover {
+            color: #f1c40f;
+        }
+        #menu-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            display: none;
+        }
+        .about {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            backdrop-filter: blur(10px); /* Glassmorphism effect */
+        }
+        .heading {
+            text-align: center;
+            color: #16a085;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: none;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+            justify-content: center;
+        }
+        .image img {
+            max-width: 250px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(22, 160, 133, 0.2); /* Shadow only on image */
+        }
+        .content {
+            flex: 1;
+            min-width: 300px;
+        }
+        .content h3 {
+            color: #333;
+            font-size: 1.5rem;
+            margin: 15px 0;
+            text-shadow: none; /* No shadow on text */
+        }
+        .content h3 span {
+            color: #16a085;
+            font-size: 2rem;
+            font-weight: 600;
+            text-shadow: none; /* No shadow on span text */
+        }
+        form {
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            color: #555;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            text-shadow: none; /* No shadow on labels */
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            transition: border-color 0.3s ease;
+            box-shadow: none; /* No shadow on inputs */
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #16a085;
+            outline: none;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #16a085, #1abc9c);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(22, 160, 133, 0.2); /* Shadow on button */
+        }
+        .btn:hover {
+            background: linear-gradient(135deg, #128c6e, #16a085);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(22, 160, 133, 0.4);
+        }
+        .book {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .glass-row-book {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            text-shadow: none; /* No shadow on table text */
+        }
+        th {
+            background: linear-gradient(135deg, #16a085, #1abc9c);
+            color: white;
+            text-transform: uppercase;
+        }
+        td a {
+            color: #16a085;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        td a:hover {
+            color: #128c6e;
+            text-decoration: underline;
+        }
+        .footer {
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        .footer .credit {
+            font-size: 1.2rem;
+            text-shadow: none; /* No shadow on footer text */
+        }
+        @media (max-width: 768px) {
+            .image {
+                display: none;
+            }
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+                display: none;
+                position: absolute;
+                top: 80px;
+                right: 20px;
+                background: #16a085;
+                padding: 20px;
+                border-radius: 10px;
+            }
+            .navbar.active {
+                display: flex;
+            }
+            #menu-btn {
+                display: block;
+            }
+            .about, .book {
+                margin: 80px 20px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="{{ url_for('index') }}" class="logo"><i class="fas fa-heartbeat"></i> medicare</a>
+        <nav class="navbar">
+            {% if username %}
+            <a href="#" class="disabled">{{ username }}</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+        </nav>
+        <div id="menu-btn" class="fas fa-bars"></div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div style="max-width: 1200px; margin: 20px auto; text-align: center;">
+        {% for category, message in messages %}
+        <p style="color: {% if category == 'success' %}#16a085{% else %}#e74c3c{% endif %}; font-size: 1.2rem; padding: 10px; background: rgba(255, 255, 255, 0.9); border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            {{ message }}
+        </p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <section class="about" id="about">
+        <h1 class="heading">Your <span>Profile</span></h1>
+        <div class="row">
+            <div class="image">
+                <img src="https://cdn3d.iconscout.com/3d/premium/thumb/user-3711850-3105265.png?f=webp" alt="Profile">
+            </div>
+            <div class="content">
+                {% if not user.age or not user.blood_group %}
+                <h4 class="text-center" style="color: red;">Please Complete your profile before Consultation</h4>
+                {% endif %}
+                <h3>Username: <span>{{ user.username }}</span></h3>
+                <h3>Email: <span>{{ user.email }}</span></h3>
+                
+                <form method="POST" action="{{ url_for('profile', user_type=user.user_type) }}">
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="text" id="phone" name="phone" value="{{ user.phone or '' }}" placeholder="Enter phone number" class="box">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea id="address" name="address" placeholder="Enter address" class="box">{{ user.address or '' }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="date_of_birth">Date of Birth</label>
+                        <input type="date" id="date_of_birth" name="date_of_birth" value="{{ user.date_of_birth.strftime('%Y-%m-%d') if user.date_of_birth else '' }}" class="box">
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <input type="text" id="gender" name="gender" value="{{ user.gender or '' }}" placeholder="Enter gender" class="box">
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Age</label>
+                        <input type="text" id="age" name="age" value="{{ user.age or '' }}" placeholder="Enter age" class="box">
+                    </div>
+                    <div class="form-group">
+                        <label for="blood_group">Bllod Group</label>
+                        <input type="text" id="blood_group" name="blood_group" value="{{ user.blood_group or '' }}" placeholder="Enter blood group" class="box">
+                    </div>
+                    {% if user.user_type == 'asha_worker' %}
+                    <div class="form-group">
+                        <label for="area_of_operation">Area of Operation</label>
+                        <input type="text" id="area_of_operation" name="area_of_operation" value="{{ user.area_of_operation or '' }}" placeholder="Enter area of operation" class="box">
+                    </div>
+                    <div class="form-group">
+                        <label for="worker_id">Worker ID</label>
+                        <input type="text" id="worker_id" name="worker_id" value="{{ user.worker_id or '' }}" placeholder="Enter worker ID" class="box">
+                    </div>
+                    {% endif %}
+                    <button type="submit" class="btn">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="book" id="book">
+        <h1 class="heading">Your <span>Appointments</span></h1>
+        {% if user_appointments %}
+        <div class="glass-row-book">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Time Slot</th>
+                        <th>Type of Doctor</th>
+                        <th>Status</th>
+                        <th>Prescription</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in user_appointments %}
+                    <tr>
+                        <td>{{ appointment.name }}</td>
+                        <td>{{ appointment.time_slot }}</td>
+                        <td>{{ appointment.type_of_doctor }}</td>
+                        <td style="color: {% if appointment.status == 'Approved' %}#16a085{% elif appointment.status == 'Rejected' %}#e74c3c{% else %}#555{% endif %}">
+                            {{ appointment.status }}
+                        </td>
+                        <td>
+                            {% if appointment.status == 'Prescribed' %}
+                            <a href="{{ url_for('view_prescription', appointment_id=appointment.id) }}" target="_blank">View Prescription</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="text-align: center; font-size: 1.2rem; color: #333;">No appointments found.</p>
+        {% endif %}
+    </section>
+
+    <section class="footer">
+        <div class="credit">Made with 💚 | Medicare @ 2025</div>
+    </section>
+
+    <script>
+        // Toggle navbar on mobile
+        document.getElementById('menu-btn').onclick = () => {
+            document.querySelector('.navbar').classList.toggle('active');
+        };
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
