@@ -16,10 +16,13 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt --ignore-installed
 
 # 5. APPLICATION CODE: Copy all the source code (respecting .gitignore)
+# The application files must be in the working directory
 COPY . .
 
 # 6. PORT: Expose the port Gunicorn will run on (ECS/Fargate will map this)
 EXPOSE 8000
 
 # 7. COMMAND: Run the application using a production WSGI server (Gunicorn)
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "medicare:login"]
+# FIXED: Changed the target from 'medicare:login' to 'app:app' 
+# (Module 'app' -> app.py; Callable 'app' -> the application instance name)
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
