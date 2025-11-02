@@ -20,9 +20,9 @@ RUN pip install --no-cache-dir -r requirements.txt --ignore-installed
 COPY . .
 
 # 6. PORT: Expose the port Gunicorn will run on (ECS/Fargate will map this)
-EXPOSE 8000
+EXPOSE 80
 
 # 7. COMMAND: Run the application using a production WSGI server (Gunicorn)
 # FIXED: Changed the target from 'medicare:login' to 'app:app' 
 # (Module 'app' -> app.py; Callable 'app' -> the application instance name)
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:80", "app:app"]
