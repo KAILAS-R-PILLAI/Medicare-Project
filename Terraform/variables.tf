@@ -1,11 +1,14 @@
-variable "aws_region" {
-    default = "ap-south-1"
+variable "subnet_ids" {
+  type = list(string)
+  default = ["subnet-0e9bb756b190aeda6"]
 }
 
-variable "app_name" {
-    default = "medicare-app"
+variable "security_group_ids" {
+  type = list(string)
+  default = ["sg-0564fef9413077c4b"]
 }
 
-variable "container_port" {
-    default = 5000
+variable "ecr_repo_name" {
+  type    = string
+  default = "medicare-app"
 }

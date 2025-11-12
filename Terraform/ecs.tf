@@ -1,30 +1,32 @@
 resource "aws_ecs_cluster" "app_cluster" {
-  name = "${var.app_name}-cluster"
+  name = "medicare-cluster"
 }
 
 resource "aws_ecs_task_definition" "app_task" {
-  family                   = "${var.app_name}-task"
+  family                   = "medicare-task"
+  network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  network_mode            = "awsvpc"
-  cpu                     = "256"
-  memory                  = "512"
-  execution_role_arn      = aws_iam_role.ecs_task_execution_role.arn
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
-      name      = var.app_name
+      name      = "medicare-app"
       image     = "${aws_ecr_repository.app_repo.repository_url}:latest"
       essential = true
-      portMappings = [{
-        containerPort = var.container_port
-        hostPort      = var.container_port
-      }]
+      portMappings = [
+        {
+          containerPort = 80
+          hostPort      = 80
+        }
+      ],
       logConfiguration = {
-        logDriver = "awslogs"
+        logDriver = "awslogs",
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.app_logs.name
-          awslogs-region        = var.aws_region
-          awslogs-stream-prefix = var.app_name
+          awslogs-group         = "/ecs/medicare-task"
+          awslogs-region        = "ap-south-1"
+          awslogs-stream-prefix = "ecs"
         }
       }
     }
@@ -32,15 +34,20 @@ resource "aws_ecs_task_definition" "app_task" {
 }
 
 resource "aws_ecs_service" "app_service" {
-  name            = "${var.app_name}-service"
+  name            = "medicare-service"
   cluster         = aws_ecs_cluster.app_cluster.id
   task_definition = aws_ecs_task_definition.app_task.arn
   launch_type     = "FARGATE"
   desired_count   = 1
 
   network_configuration {
-    subnets         = "subnet-0e9bb756b190aeda6" 
-    security_groups = "sg-0564fef9413077c4b"
+    subnets         = var.subnet_ids
+    security_groups = var.security_group_ids
     assign_public_ip = true
   }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.ecs_task_execution_role_policy,
+    aws_cloudwatch_log_group.ecs_logs
+  ]
 }
