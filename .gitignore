@@ -87,3 +87,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+.terraform/
+*.tfstate
+*.tfstate.backup
+crash.log
+terraform.tfvars
