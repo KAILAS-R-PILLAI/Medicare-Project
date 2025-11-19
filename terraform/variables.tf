@@ -10,5 +10,5 @@ variable "security_group_ids" {
 
 variable "ecr_repo_name" {
   type    = string
-  default = "medicare-app"
+  default = "medicare-app-repo"
 }

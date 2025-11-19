@@ -12,7 +12,7 @@ resource "aws_ecs_task_definition" "app_task" {
 
   container_definitions = jsonencode([
     {
-      name      = "medicare-app"
+      name      = "medicare-app-repo"
       image     = "${aws_ecr_repository.app_repo.repository_url}:latest"
       essential = true
       portMappings = [
@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "app_task" {
 }
 
 resource "aws_ecs_service" "app_service" {
-  name            = "medicare-service"
+  name            = "medicare-app-service"
   cluster         = aws_ecs_cluster.app_cluster.id
   task_definition = aws_ecs_task_definition.app_task.arn
   launch_type     = "FARGATE"
