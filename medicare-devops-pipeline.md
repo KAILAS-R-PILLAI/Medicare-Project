@@ -203,9 +203,6 @@ To enable this:
   }
   ```
  <img width="1876" height="756" alt="Screenshot 2025-11-19 225010" src="https://github.com/user-attachments/assets/9a95b410-dc01-44c8-9262-f0c550e407f7" />
- <img width="1916" height="696" alt="Screenshot 2025-11-19 224503" src="https://github.com/user-attachments/assets/f92744bd-f723-4a61-8647-4f4db5f8a292" />
- <img width="1916" height="696" alt="Screenshot 2025-11-19 224503" src="https://github.com/user-attachments/assets/9172365e-b0d1-46ce-b11d-af271708d5cd" />
-
 
 
 ---
