@@ -7,7 +7,108 @@ This project automates the deployment of a Dockerized web application to AWS ECS
 
 ## Workflow Summary
 
-### 1. AWS Infrastructure Setup
+### 1. Terraform Infrastructure as Code Setup
+
+To ensure consistent provisioning of AWS resources, Terraform was used to automate the creation of:
+
+- Amazon ECR  
+- ECS Fargate Cluster, Task Definition & Service  
+- IAM Roles & Policies  
+- CloudWatch Log Groups  
+- Container Insights  
+
+This enables a fully reproducible deployment environment.
+
+---
+
+#### File-wise Summary
+
+- **main.tf**
+  - Configures AWS provider  
+  - Loads all infrastructure modules  
+  - Defines the region (`ap-south-1`)  
+
+- **ecr.tf**
+  -Creates the ECR repository used by Jenkins to push application images:
+  
+    - `aws_ecr_repository`  
+
+- **ecs.tf**
+  -Creates all ECS resources:
+
+    - ECS Cluster  
+    - Fargate task definition  
+    - ECS service with networking  
+    - Security group for port 80 inbound  
+    - Subnet attachments  
+
+ECS is configured to pull images from ECR and run containers in Fargate.
+
+- **iam.tf**
+  -Defines the IAM roles required for:
+
+    - ECS Task Execution Role  
+    - ECS Task Role  
+    - Jenkins ECR/ECS permissions  
+
+  -Policies include:
+    - `AmazonECS_FullAccess`  
+    - `AmazonEC2ContainerRegistryFullAccess`  
+
+- **cloudwatch.tf**
+  - Enables observability:
+
+    - Creates CloudWatch log group  
+    - Attaches log configuration to ECS task  
+    - Activates **Container Insights** for ECS cluster  
+
+  - This allows Grafana to fetch ECS metrics later.
+
+- **variables.tf**
+  - Stores all environment-specific variables:
+ 
+    - Repository name    
+    - Subnets ID  
+    - Security group IDs  
+
+- **outputs.tf**
+  - Exposes useful resource values such as:
+
+    - ECR repository URL  
+    - ECS cluster ARN  
+    - ECS service name  
+    - Task definition ARN  
+    - CloudWatch log group  
+
+  - These values are used by Jenkins during deployment.
+
+
+#### 5.3 Terraform Deployment Steps
+
+- **Initialize**
+```
+terraform init
+```
+
+- **Preview**
+```
+terraform plan
+```
+
+- **Apply**
+```
+terraform apply -auto-approve
+```
+
+This provisions the entire AWS environment.
+
+<img width="1057" height="433" alt="Screenshot 2025-11-20 173722" src="https://github.com/user-attachments/assets/a4015f9a-c7bf-43b0-b878-fbea869535fb" />
+
+
+---
+
+
+### 2. AWS Infrastructure Setup
 All AWS resources and permissions were provisioned to support secure, automated deployment and monitoring:
 
 #### IAM Roles and Policies
@@ -30,7 +131,7 @@ To allow public access to the deployed app:
 
 ---
 
-### 2. Dockerize the Web App
+### 3. Dockerize the Web App
 - Built a `Dockerfile` exposing port 80 for public access
 - Used `gunicorn` to serve the Flask app:
 
@@ -66,15 +167,20 @@ CMD ["gunicorn", "--bind", "0.0.0.0:80", "app:app"]
 ```
 ---
 
-### 3. Automated CI/CD Pipeline with Jenkins
+### 4. Automated CI/CD Pipeline with Jenkins
 Created a multi-stage Jenkins pipeline that automates the entire deployment process:
 
 - Clones the GitHub repository
 - Builds and tags the Docker image
-- Pushes the image to Amazon ECR (automatically creates the repository if it doesn't exist)
-- Registers a new ECS task definition with the latest image
-- Creates an ECS cluster and enables CloudWatch Container Insights (if not already present)
-- Creates an ECS service and deploys the app to AWS Fargate
+- Pushes the image to Amazon ECR 
+  <img width="1916" height="694" alt="Screenshot 2025-11-19 224438" src="https://github.com/user-attachments/assets/7ad03040-2464-49cf-acf6-b4d2e8a2d955" />
+  <img width="1916" height="696" alt="Screenshot 2025-11-19 224503" src="https://github.com/user-attachments/assets/6b3ffb5e-a814-438c-b828-7628e4eaa67a" />
+
+- Creates an ECS service with cotainer insights enabled and deploys the app to AWS Fargate
+  <img width="1916" height="694" alt="Screenshot 2025-11-19 224438" src="https://github.com/user-attachments/assets/365c5c35-af99-46b7-a405-7c5649544d4c" />
+  <img width="1894" height="815" alt="Screenshot 2025-11-19 224536" src="https://github.com/user-attachments/assets/7b35103b-8900-4b64-833b-5c255acc4fcd" />
+  <img width="1904" height="720" alt="Screenshot 2025-11-19 224553" src="https://github.com/user-attachments/assets/1a71943c-c8f6-4ed0-83d3-11e54303688c" />
+
 - Cleans up local Docker images after deployment
 
 All AWS CLI operations are executed using securely injected credentials via Jenkins.
@@ -94,10 +200,16 @@ To enable this:
         closure()
     }
   }
- 
+  ```
+ <img width="1876" height="756" alt="Screenshot 2025-11-19 225010" src="https://github.com/user-attachments/assets/9a95b410-dc01-44c8-9262-f0c550e407f7" />
+ <img width="1916" height="696" alt="Screenshot 2025-11-19 224503" src="https://github.com/user-attachments/assets/f92744bd-f723-4a61-8647-4f4db5f8a292" />
+ <img width="1916" height="696" alt="Screenshot 2025-11-19 224503" src="https://github.com/user-attachments/assets/9172365e-b0d1-46ce-b11d-af271708d5cd" />
+
+
+
 ---
 
-### 4. Slack Integration
+### 5. Slack Integration
 
 Slack notifications were integrated into the Jenkins pipeline to improve visibility and team collaboration. Build status alerts are automatically sent to a designated Slack channel upon success or failure.
 
@@ -139,6 +251,7 @@ Slack notifications were integrated into the Jenkins pipeline to improve visibil
    - Slack credentials are securely stored in Jenkins and injected at runtime. They are never exposed in the Jenkinsfile or logs.
 
    - Slack integration ensures that the team receives real-time updates on build outcomes, helping to quickly identify issues and maintain deployment velocity.
+  <img width="1079" height="455" alt="Screenshot 2025-11-23 110647" src="https://github.com/user-attachments/assets/607dfa3d-8051-46fa-a6db-780a71935003" />
 
 ---
 
@@ -146,43 +259,25 @@ Slack notifications were integrated into the Jenkins pipeline to improve visibil
 
 Grafana was integrated into the workflow to provide real-time observability of the ECS Fargate deployment using CloudWatch metrics. This setup enables proactive monitoring, alerting, and dashboard sharing for better operational visibility.
 
-#### Monitoring Setup Steps
-
-- **Step-1: Deploy Grafana via Grafana Cloud**
-   - Signed up for a **Grafana Cloud** account at [grafana.com](https://grafana.com)
-   - Created a new hosted Grafana instance
-   - Logged into the Grafana Cloud dashboard and accessed the workspace
-   - No local installation required — dashboards and data sources are managed via the cloud UI
-
-- **Step-2: Enable CloudWatch Container Insights**
-   - Container Insights was enabled for the ECS cluster via Jenkins using the AWS CLI:
-     ```bash
-     aws ecs update-cluster-settings \
-       --cluster medicare-cluster \
-       --settings name=containerInsights,value=enabled \
-       --region ap-south-1
-     ```
-   - This allows ECS to publish detailed metrics (CPU, memory, task count) to CloudWatch
-
-- **Step-3: Add CloudWatch as a Data Source in Grafana Cloud**
-   - In Grafana Cloud:
+- Add CloudWatch as a Data Source in Grafana Cloud
+   - In Grafana :
      - Go to **Connections → Add data source**
      - Select **Amazon CloudWatch**
      - Provide:
        - AWS region: `ap-south-1`
        - Authentication: Access & secret keys or IAM role (via AWS Cloud integration)
      - Click **Save & Test**
-
-- **Step-4: Create Dashboard Panels**
-   - A custom dashboard was created with the following panels:
-     - **CPUUtilization**: Monitors CPU usage of ECS tasks
-     - **MemoryUtilization**: Tracks memory consumption
-     - **TaskCount**: Shows the number of running tasks
-   - Metrics were queried from the namespace: `ECS/ContainerInsights`
+     - Create Dashboard Panels
+     - A custom dashboard was created with the following panels:
+       - **CPUUtilization**: Monitors CPU usage of ECS tasks
+       - **MemoryUtilization**: Tracks memory consumption
+       - **TaskCount**: Shows the number of running tasks
+     - Metrics were queried from the namespace: `ECS/ContainerInsights`
 
 ---
 
 ## Technologies Used
+- **Terraform** - for provisioning Infrastructure as Code
 - **AWS ECS Fargate** – for container orchestration
 - **Amazon ECR** – for Docker image storage
 - **IAM Roles & Policies** – for secure AWS access
