@@ -6,7 +6,7 @@ pipeline {
         DOCKER_IMAGE_NAME = 'medicare-app-repo'
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         AWS_REGION = 'ap-south-1'
-        AWS_ACCOUNT_ID = '354121451612'
+        AWS_ACCOUNT_ID = #['Your account ID']
         ECR_REPOSITORY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${DOCKER_IMAGE_NAME}"
         ECR_REGISTRY_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         ECS_CLUSTER = 'medicare-cluster'
@@ -59,15 +59,15 @@ pipeline {
             steps {
                 withAwsCredentials {
                     sh """
-                        echo "Logging into ECR and pushing image..."
-                        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY_URL}
-                        
-                        docker tag ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ${ECR_REPOSITORY}:${IMAGE_TAG}
-                        docker push ${ECR_REPOSITORY}:${IMAGE_TAG}
-                        
-                        docker tag ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ${ECR_REPOSITORY}:latest
-                        docker push ${ECR_REPOSITORY}:latest
-                           
+                        echo "Deploying the image to ECS Fargate service: ${ECS_SERVICE}..."
+                        aws ecs update-service \\
+                            --cluster ${ECS_CLUSTER} \\
+                            --service ${ECS_SERVICE} \\
+                            --settings name=containerInsights,value=enabled
+                            --force-new-deployment \\
+                            --region ${AWS_REGION}
+                            echo "Deployment initiated. ECS will now perform a rolling update."
+                            
                     """
                 }
             }
