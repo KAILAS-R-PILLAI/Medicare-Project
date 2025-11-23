@@ -34,7 +34,7 @@ This enables a fully reproducible deployment environment.
     - `aws_ecr_repository`  
 
 - **ecs.tf**
-  -Creates all ECS resources:
+  - Creates all ECS resources:
 
     - ECS Cluster  
     - Fargate task definition  
@@ -42,7 +42,7 @@ This enables a fully reproducible deployment environment.
     - Security group for port 80 inbound  
     - Subnet attachments  
 
-ECS is configured to pull images from ECR and run containers in Fargate.
+  - ECS is configured to pull images from ECR and run containers in Fargate.
 
 - **iam.tf**
   -Defines the IAM roles required for:
