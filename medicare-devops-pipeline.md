@@ -177,7 +177,6 @@ Created a multi-stage Jenkins pipeline that automates the entire deployment proc
   <img width="1916" height="696" alt="Screenshot 2025-11-19 224503" src="https://github.com/user-attachments/assets/6b3ffb5e-a814-438c-b828-7628e4eaa67a" />
 
 - Creates an ECS service with cotainer insights enabled and deploys the app to AWS Fargate
-  <img width="1916" height="694" alt="Screenshot 2025-11-19 224438" src="https://github.com/user-attachments/assets/365c5c35-af99-46b7-a405-7c5649544d4c" />
   <img width="1894" height="815" alt="Screenshot 2025-11-19 224536" src="https://github.com/user-attachments/assets/7b35103b-8900-4b64-833b-5c255acc4fcd" />
   <img width="1904" height="720" alt="Screenshot 2025-11-19 224553" src="https://github.com/user-attachments/assets/1a71943c-c8f6-4ed0-83d3-11e54303688c" />
 
